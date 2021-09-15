@@ -22,6 +22,8 @@ class Double_Linked_List{
         void printRecursivaFinInicio(NodoD<T>*);
         void printRecursivaFinInicio();
         void printIterativaFinInicio();
+        void ordenarAscendente();
+        void ordenarDescendente();
         int numPares();
         ~Double_Linked_List();
 };
@@ -190,6 +192,45 @@ int Double_Linked_List<T>::numPares(){
     }
     return cantidad;
 }
+
+template<typename T>
+void Double_Linked_List<T>::ordenarAscendente(){
+	NodoD<T> *aux1 = this->head, *aux2;
+	T temp;
+	while(aux1->get_sig()){
+		aux2 = aux1->get_sig();
+		while(aux2){
+			if(aux2->get_dato() < aux->get_dato()){
+				temp = aux->get_dato();
+				aux->set_dato(aux2->get_dato());
+				aux2->set_dato(temp);
+			}
+			aux2 = aux2->get_sig(); 
+		}
+		aux1 = aux1->get_sig();
+	}
+	
+}
+
+template<typename T>
+void Double_Linked_List<T>::ordenarDescendente(){
+	NodoD<T> *aux1 = this->head, *aux2;
+	T temp;
+	while(aux1->get_sig()){
+		aux2 = aux1->get_sig();
+		while(aux2){
+			if(aux2->get_dato() > aux->get_dato()){
+				temp = aux->get_dato();
+				aux->set_dato(aux2->get_dato());
+				aux2->set_dato(temp);
+			}
+			aux2 = aux2->get_sig(); 
+		}
+		aux1 = aux1->get_sig();
+	}
+	
+}
+
 
 template<typename T>
 Double_Linked_List<T>::~Double_Linked_List(){
