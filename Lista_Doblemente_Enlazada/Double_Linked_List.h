@@ -7,13 +7,16 @@ template<typename T>
 class Double_Linked_List{
     private:
         NodoD<T> *head;
+        NodoD<T> *actual;
         int size;
     public:
         Double_Linked_List();
         Double_Linked_List(const Double_Linked_List<T> &);
         Double_Linked_List(Double_Linked_List<T> &&);
         void push_back(T);
+        void pop_back();
         void print();
+        /*Funciones solicitadas*/
         double maximoIterativa();
         double maximoRecursiva(NodoD<T>*,double );
         void maximoRecursiva();
@@ -24,6 +27,13 @@ class Double_Linked_List{
         void printIterativaFinInicio();
         void ordenarAscendente();
         void ordenarDescendente();
+        void Begin();
+        void Last();
+        void Next();
+        void Previus();
+        T getDato();
+        void printBN();
+        void printLP();
         int numPares();
         ~Double_Linked_List();
 };
@@ -32,6 +42,7 @@ template<typename T>
 Double_Linked_List<T>::Double_Linked_List(){
     this->head = nullptr;
     this->size = 0;
+    this->actual = nullptr; 
 }
 
 template<typename T>
@@ -43,14 +54,17 @@ Double_Linked_List<T>::Double_Linked_List(const Double_Linked_List<T> &p){
         this->push_back(aux->get_dato());
         aux = aux->get_sig();
     }
+    this->actual = nullptr;
 }
 
 template<typename T>
 Double_Linked_List<T>::Double_Linked_List(Double_Linked_List<T> &&p){
     this->head = p.head;
     this->size = p.size;
+    this->actual = nullptr;
     p.head = nullptr;
     p.size = 0;
+    p.actual = nullptr;
 }
 
 template<typename T>
@@ -67,6 +81,26 @@ void Double_Linked_List<T>::push_back(T dato){
         nuevo->set_ant(aux);
     }
     size++;
+    return;
+}
+
+template<typename T>
+void Double_Linked_List<T>::pop_back(){
+    if(!this->head){
+        return;
+    }else if(this->size == 1){
+        delete head;
+        this->head = nullptr;
+    }
+    else{
+        NodoD<T> *aux = this->head;
+        while(aux->get_sig()){
+            aux = aux->get_sig();
+        }
+        aux->get_ant()->set_sig(nullptr);
+        delete aux;
+    }
+    size--;
     return;
 }
 
@@ -200,9 +234,9 @@ void Double_Linked_List<T>::ordenarAscendente(){
 	while(aux1->get_sig()){
 		aux2 = aux1->get_sig();
 		while(aux2){
-			if(aux2->get_dato() < aux->get_dato()){
-				temp = aux->get_dato();
-				aux->set_dato(aux2->get_dato());
+			if(aux2->get_dato() < aux1->get_dato()){
+				temp = aux1->get_dato();
+				aux1->set_dato(aux2->get_dato());
 				aux2->set_dato(temp);
 			}
 			aux2 = aux2->get_sig(); 
@@ -219,9 +253,9 @@ void Double_Linked_List<T>::ordenarDescendente(){
 	while(aux1->get_sig()){
 		aux2 = aux1->get_sig();
 		while(aux2){
-			if(aux2->get_dato() > aux->get_dato()){
-				temp = aux->get_dato();
-				aux->set_dato(aux2->get_dato());
+			if(aux2->get_dato() > aux1->get_dato()){
+				temp = aux1->get_dato();
+				aux1->set_dato(aux2->get_dato());
 				aux2->set_dato(temp);
 			}
 			aux2 = aux2->get_sig(); 
@@ -231,9 +265,88 @@ void Double_Linked_List<T>::ordenarDescendente(){
 	
 }
 
+template<typename T>
+void Double_Linked_List<T>::Begin(){
+    if(this->head)
+        this->actual = this->head;
+    return;
+}
+ 
+template<typename T>
+void Double_Linked_List<T>::Last(){
+    if(this->head){
+        this->actual = this->head;
+        while(actual->get_sig()){
+            actual = actual->get_sig();
+        }
+    }
+    return;
+}
 
 template<typename T>
-Double_Linked_List<T>::~Double_Linked_List(){
+void Double_Linked_List<T>::Next(){
+    if(this->actual){
+        this->actual = this->actual->get_sig();
+    }else{
+        this->Begin();
+    }
+    return;
+}
 
+template<typename T>
+void Double_Linked_List<T>::Previus(){
+    if(this->actual){
+        this->actual = this->actual->get_ant();
+    }
+    return;
+}
+
+template<typename T>
+T Double_Linked_List<T>::getDato(){
+    if(this->actual)
+        return this->actual->get_dato();
+    else
+        return NULL;
+}
+template<typename T>
+void Double_Linked_List<T>::printBN(){
+    this->Begin();
+    if(!this->actual){
+        cout << "La lista esta vacia.\n";
+    }else{
+        int i = 1;
+        while(i<this->size){
+            cout<<"<" << i << ":" << this->getDato() << ">->";
+            this->Next();
+            i++; 
+        }
+        cout << "<" << i << ":" << this->getDato() << ">\n";
+        return;
+    }
+}
+
+template<typename T>
+void Double_Linked_List<T>::printLP(){
+    this->Last();
+    if(!this->actual){
+        cout << "La lista esta vacia.\n";
+    }else{
+        int i = this->size;
+        while(i>1){
+            cout<<"{" << i << ":" << this->getDato() << "}->";
+            this->Previus();
+            i--; 
+        }
+        cout << "{" << i << ":" << this->getDato() << "}\n";
+        return;
+    }
+}
+template<typename T>
+Double_Linked_List<T>::~Double_Linked_List(){
+    while(this->size){
+        this->pop_back();
+    }
+    delete head;
+    delete actual;
 }
 #endif
