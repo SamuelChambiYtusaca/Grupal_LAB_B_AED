@@ -11,7 +11,7 @@ class Binary_Tree
 {
 private:
     Node<T> * root;
-    int contPeso;
+    //
 public:
     Binary_Tree();
     void add(T);
@@ -19,32 +19,20 @@ public:
     bool erase(T);
     bool find(T);
     bool find(T, Node<T>*);
-    T get_Padre(T,Node<T>*,Node<T>*);
-    T get_Padre(T);
-    T get_abuelo(T);
-    T get_hermano(T);
     void preOrder(Node<T>*, stringstream &);
     string preOrder();
     void postOrder(Node<T>*, stringstream &);
     string postOrder();
     void inOrder(Node<T>*, stringstream &);
     string inOrder();
-    int altura(T);
-    int altura(Node<T>*);
-    int peso();
-    Node<T>* buscar(T);
-    Node<T>* buscar(T,Node<T>*);
-    void sucesores(T );
-    void sucesores(Node<T>*);
-    void antecesores(T);
-    void antecesores(Node<T>*);
+    void clear(Node<T>*);
+    void clear();
     ~Binary_Tree();
 };
 
 template <typename T>
 Binary_Tree<T>::Binary_Tree(){
     this->root = nullptr;
-    this->contPeso = 0;
 }
 
 template <typename T>
@@ -62,7 +50,6 @@ void Binary_Tree<T>::add(T dato, Node<T>*&nodo, Node<T>*padre){
 template <typename T>
 void Binary_Tree<T>::add(T dato){
     add(dato,root,root);
-    this->contPeso++;
     return;
 }
 
@@ -74,7 +61,6 @@ bool Binary_Tree<T>::erase(T dato){
         Node<T>* tmp = root;
         root = nullptr;
         delete tmp;
-        this->contPeso--;
         return true;
     }
     Node<T>*nodo = root;
@@ -100,7 +86,6 @@ bool Binary_Tree<T>::erase(T dato){
                 aux->sons[2]->sons[1] = nullptr;
                 delete aux;
             }
-            this->contPeso--;
             return true;
         }else if(!nodo->sons[0] && !nodo->sons[1]){
             Node<T>* tmp = nodo;
@@ -110,7 +95,6 @@ bool Binary_Tree<T>::erase(T dato){
                 nodo->sons[2]->sons[1] = nullptr;
             }
             delete tmp;
-            this->contPeso--;
             return true;
         }else{
             if(nodo->sons[0]){
@@ -132,7 +116,6 @@ bool Binary_Tree<T>::erase(T dato){
                     tmp->sons[2]->sons[1] = nodo;
                 delete tmp;
             }
-            this->contPeso--;
             return true;
         }
     }
@@ -195,117 +178,21 @@ string Binary_Tree<T>::postOrder(){
 }
 
 template <typename T>
-T Binary_Tree<T>::get_Padre(T dato,Node<T>* nodo, Node<T>*padre){
-    if(!nodo) return 0;
-    if(nodo->dato == dato) return padre->dato;
-    padre = nodo;
-    get_Padre(dato,nodo->sons[nodo->dato<dato],padre);
+void Binary_Tree<T>::clear(Node<T>* nodo){
+    if(!nodo) return;
+    clear(nodo->sons[0]);
+    clear(nodo->sons[1]);
+    delete nodo;
 }
 
 template <typename T>
-T Binary_Tree<T>::get_Padre(T dato){
-    return get_Padre(dato,root,root);
+void Binary_Tree<T>::clear(){
+    clear(root);
 }
 
 template <typename T>
-T Binary_Tree<T>::get_abuelo(T dato){
-    return get_Padre(get_Padre(dato,root,root),root,root);
-}
-
-template<typename T>
-T Binary_Tree<T>::get_hermano(T d){   
-    Node<T>*p = new Node<T>(0);
-    if(!root) return 0;                            
-    if(root->dato==d) return 0;                   
-    Node<T>* padre = root;                           
-    Node<T>* hijo = root;                           
-    while(hijo && hijo->dato!=d){
-        padre = hijo;                                  
-        hijo = hijo->sons[ hijo->dato < d ];          
-    }
-    if(hijo){
-        if( padre->sons[ !( padre->dato < d ) ] )      
-            p = padre->sons[ !( padre->dato < d ) ];   
-        else p = nullptr;                         
-    }
-    if(p) return p->dato; else return 0;                                                         
-}
-
-template <typename T>
-int Binary_Tree<T>::altura(Node<T>*nodo){
-    if(!nodo)
-        return 0;
-    if(!nodo->sons[0] && !nodo->sons[1]) // Es una hoja
-        return 1;
-    return max(altura(nodo->sons[0]),altura(nodo->sons[1]))+1;
-}
-
-template <typename T>
-int Binary_Tree<T>::altura(T dato){
-    Node<T>* nodo = buscar(dato);
-    if(!nodo) return 0;
-    return altura(nodo);
-}
-
-template <typename T>
-int Binary_Tree<T>::peso(){
-    return this->contPeso;
-}
-
-template <typename T>
-Node<T>* Binary_Tree<T>::buscar(T dato){
-    return buscar(dato,root);
-}
-
-template <typename T>
-Node<T>* Binary_Tree<T>::buscar(T dato, Node<T>* nodo){
-    if(!nodo)return nullptr;
-    if(nodo->dato == dato) return nodo;
-    buscar(dato,nodo->sons[nodo->dato<dato]);
-}
-
-template <typename T>
-void Binary_Tree<T>::sucesores(T dato){
-    Node<T> *aux = buscar(dato);
-    if(!aux){
-        return;
-    }
-    std::cout << "Sucesores de "<< aux->dato << ": \n";
-    sucesores(aux);
-}
-
-template <typename T>
-void Binary_Tree<T>::sucesores(Node<T> *nodo){
-    if(nodo->sons[0]){
-        std::cout<< "[" << nodo->sons[0]->dato << "]\n";
-        sucesores(nodo->sons[0]);
-    }
-    if(nodo->sons[1]){
-        std::cout<< "[" << nodo->sons[1]->dato << "]\n";
-        sucesores(nodo->sons[1]);
-    }
-}
-
-template <typename T>
-void Binary_Tree<T>::antecesores(Node<T>*nodo){
-    if(!nodo)
-        return;
-    std::cout << "[" << nodo->dato << "]\n";
-    antecesores(nodo->sons[2]);
-}
-
-template<typename T>
-void Binary_Tree<T>::antecesores(T dato){
-    Node<T>* nodo = buscar(dato);
-    if(!nodo)
-        return;
-    std::cout << "Antecesores de " << nodo->dato << ": \n";
-    antecesores(nodo->sons[2]);
-}
-
-template <typename T>
-Binary_Tree<T>::~Binary_Tree()
-{
+Binary_Tree<T>::~Binary_Tree(){
+    clear();
 }
 
 #endif
