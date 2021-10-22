@@ -5,6 +5,7 @@
 #include<vector>
 #include<string>
 #include<sstream>
+#include<fstream>
 using namespace std;
 template <typename T>
 class Binary_Tree
@@ -164,6 +165,7 @@ string Binary_Tree<T>::inOrder(){
     inOrder(root,content);
     return content.str();
 }
+
 template <typename T>
 void Binary_Tree<T>::postOrder(Node<T>* nodo, stringstream &content){
     if(!nodo) return ;
@@ -195,11 +197,11 @@ void Binary_Tree<T>::clear(){
 template <typename T>
 void Binary_Tree<T>::graficar(Node<T>* nodo, ofstream &archivo){
     if(!nodo) return;
-    if(nodo->sons[1]){
-        archivo << nodo->dato << "--" << nodo->sons[1]->dato << ";\n";
-    }
     if(nodo->sons[0]){
         archivo << nodo->dato << "--" << nodo->sons[0]->dato << ";\n";
+    }
+    if(nodo->sons[1]){
+        archivo << nodo->dato << "--" << nodo->sons[1]->dato << ";\n";
     }
     graficar(nodo->sons[0], archivo);
     graficar(nodo->sons[1], archivo);
@@ -209,13 +211,13 @@ template <typename T>
 void Binary_Tree<T>::graficar(){
     if(!root) return;
     ofstream archivo;
-    archivo.open("grafo.txt");
+    archivo.open("grafo.dot");
     archivo << "graph A{\n";
     graficar(root,archivo);
     archivo << "\n}";
     archivo.close();
-    system("C:\\Program Files\\Graphviz\\bin && dot -Tpng grafo.txt -o grafo.png && grafo.png");
-    //system("$ dot grafo.txt -o grafo.png -Tpng -Gcharset=utf8");
+    system("dot grafo.dot -o grafo.png -Tpng");
+    system("grafo.png");
 }
 
 template <typename T>
