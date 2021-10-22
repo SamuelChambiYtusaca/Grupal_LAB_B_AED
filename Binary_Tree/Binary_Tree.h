@@ -27,6 +27,8 @@ public:
     string inOrder();
     void clear(Node<T>*);
     void clear();
+    void graficar(Node<T>*, ofstream &);
+    void graficar();
     ~Binary_Tree();
 };
 
@@ -188,6 +190,32 @@ void Binary_Tree<T>::clear(Node<T>* nodo){
 template <typename T>
 void Binary_Tree<T>::clear(){
     clear(root);
+}
+
+template <typename T>
+void Binary_Tree<T>::graficar(Node<T>* nodo, ofstream &archivo){
+    if(!nodo) return;
+    if(nodo->sons[1]){
+        archivo << nodo->dato << "--" << nodo->sons[1]->dato << ";\n";
+    }
+    if(nodo->sons[0]){
+        archivo << nodo->dato << "--" << nodo->sons[0]->dato << ";\n";
+    }
+    graficar(nodo->sons[0], archivo);
+    graficar(nodo->sons[1], archivo);
+}
+
+template <typename T>
+void Binary_Tree<T>::graficar(){
+    if(!root) return;
+    ofstream archivo;
+    archivo.open("grafo.txt");
+    archivo << "graph A{\n";
+    graficar(root,archivo);
+    archivo << "\n}";
+    archivo.close();
+    system("C:\\Program Files\\Graphviz\\bin && dot -Tpng grafo.txt -o grafo.png && grafo.png");
+    //system("$ dot grafo.txt -o grafo.png -Tpng -Gcharset=utf8");
 }
 
 template <typename T>
