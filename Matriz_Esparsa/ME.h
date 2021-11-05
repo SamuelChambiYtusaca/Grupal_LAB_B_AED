@@ -1,6 +1,6 @@
 #ifndef _DispersaLista1_H_
 #define _DispersaLista1_H_
-#include "Nodo.h"
+#include "CELL.h"
 #include <iostream>
 using namespace std;
 template <class T>
