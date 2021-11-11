@@ -53,16 +53,16 @@ class Sparce{
         Cell<T>* ant_col(int f, Cell<T>* n){
             Cell<T>* q =  m_Fil[f];
             Cell<T>* ans = m_Fil[f];
-            while(q and (q)!=n){
+            while(q && (q)!=n){
                 ans = q;
-                (q) = q->m_SigCol;
+                q = q->m_SigCol;
             }
             return ans;
         }
         Cell<T>* ant_fil(int c, Cell<T>* n){
             Cell<T>* q = m_Col[c];
             Cell<T>* ans = m_Col[c];
-            while(q and (q)!= n){
+            while(q && (q)!= n){
                 ans = q;
                 q = q->m_SigFil;
             }
@@ -175,30 +175,145 @@ class Sparce{
                 cout<<endl;
             }
         }
+
+        void find_value(T d){
+            Cell<T> **q;
+            for(int i=0;i<n_Fil;i++){
+                q =  &m_Fil[i];
+                while(*q){
+                    if((*q)->m_Dato == d){
+                        cout<<"["<<i+1<<","<<(*q)->m_Col+1<<"]\n";
+                        return;
+                    }
+                    q = &((*q)->m_SigCol); 
+                }
+            }
+        }
+        Cell<T>* find_cell(T d){
+            Cell<T> **q;
+            for(int i=0;i<n_Fil;i++){
+                q =  &m_Fil[i];
+                while(*q){
+                    if((*q)->m_Dato == d){
+                        return *q;
+                    }
+                    q = &((*q)->m_SigCol); 
+                }
+            }
+        }
+        T mayorFila(){
+            Cell<T>**q;
+            int may=0,fila;
+            for(int i=0;i<n_Fil;i++){
+                q =  &m_Fil[i];
+                int sum=0;
+                while(*q){
+                    sum+=(*q)->m_Dato;
+                    q = &((*q)->m_SigCol); 
+                }
+                if(may<sum){
+                    may=sum;
+                    fila=i;
+                }
+            }
+            return fila+1;
+        }
+        T sumaColumna(int col){
+            Cell<T>**q;
+            if((*q)->m_Col < col-1) return 0;
+            q =  &m_Col[col-1];
+            int sum=0;
+            cout<<"";
+            for(int i=0;i<n_Fil;i++){
+                sum+=(*q)->m_Dato;
+                q = &((*q)->m_SigFil); 
+            }
+            return sum;
+        }
 };
 
 
-
 int main(){
+    
     Sparce<int,3,3> M;
-    srand(time(NULL));
     int n = 1;
-    /*Intentar con numero aleatorios*/
     for(int i=0;i<3;i++)
         for(int j=0;j<3;j++,n++)
             M.Insert(n,i,j);
-    M.Print();
-    /*
-        [1,2,3]
-        [4,5,6]
-        [7,8,9]
-    */
+   
     M.Delete(2,0,1);
     M.Delete(6,1,2);
     M.Delete(4,1,0); 
     M.Delete(9,2,2);
     M.Delete(1,0,0);
     cout << "\n";
+    
     M.Print();
+    M.find_value(3);
+    cout<< M.sumaColumna(2)<<"\n";
+    
+    
+    //---------------------MENU--------------------
+    /*
+    int opc,fil,col,value;
+    Sparce<int,3,3> M;
+    do{
+        cout<<"\n\n\t\t1. Insertar\n";
+        cout<<"\t\t2. Imprimir\n";
+        cout<<"\t\t3. Borrar\n";
+        cout<<"\t\t4. Buscar valor\n";
+        cout<<"\t\t5. Mayor fila\n";
+        cout<<"\t\t6. Suma Columna\n";
+        cout<<"\t\t7. Salir\n";
+        cout<<"\t\tOpcion: ";
+        cin>>opc;
+        cout<<"\n\n";
+        int n=1;
+        switch (opc){
+            case 1:
+                //cout<<"Dato: ";cin>>value;
+                //cout<<"Fila: ";cin>>fil;
+                //cout<<"Columna: ";cin>>col;
+                //M.Insert(value,fil,col);
+                for(int i=0;i<3;i++)
+                    for(int j=0;j<3;j++,n++)
+                        M.Insert(n,i,j);
+                cout<<"\n";
+                system("pause");
+                break;
+            case 2:
+                M.Print();
+                cout<<"\n";
+                system("pause");
+                break;
+            case 3:
+                cout<<"Dato: ";cin>>value;
+                cout<<"Fila: ";cin>>fil;
+                cout<<"Columna: ";cin>>col;
+                M.Delete(value,fil,col);
+                cout<<"\n";
+                system("pause");
+                break;
+            case 4:
+                cout<<"Dato: ";cin>>value;
+                M.find_value(value);
+                cout<<"\n";
+                system("pause");
+                break;
+            case 5:
+                cout<<"Ubicado en la fila: "<<M.mayorFila();
+                cout<<"\n";
+                system("pause");
+                break;
+            case 6:
+                cout<<"Columna: ";cin>>col;
+                cout<<"Suma: "<<M.sumaColumna(col);
+                cout<<"\n";
+                system("pause");
+                break;
+        }
+        system("cls");
+    }while (opc != 7);
+    */
     return 1;
 };
